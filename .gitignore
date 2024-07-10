@@ -1,0 +1,33 @@
+# Ignore build artifacts
+/build/
+/bin/
+/lib/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Ignore cmake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Ignore Visual Studio files
+*.suo
+*.pdb
+*.user
+*.aps
+*.vscode
+
+# Ignore macOS specific files
+.DS_Store
+
+# Ignore IDE-specific files
+.idea/
+.vscode/
+
+# Ignore SQLite database file (if not desired to be version controlled)
+*.db
+
+/SQLiteCpp_Example
