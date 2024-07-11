@@ -1,0 +1,92 @@
+#include "{{ class_name.lower() }}_dao.h"
+
+constexpr const char* TABLE_NAME = "{{ class_name.lower() }}";
+
+// ----------------------------------------------------------------------------
+
+{{ class_name }}Dao::{{ class_name }}Dao(DatabasePtr db)
+    : DaoBase(db)
+{
+    m_db = db;
+    m_table_name = TABLE_NAME;
+    createTable();
+}
+
+// ----------------------------------------------------------------------------
+
+void
+{{ class_name }}Dao::createTable()
+{
+    std::string query_str =
+        "CREATE TABLE IF NOT EXISTS " + m_table_name +
+        " (id INTEGER PRIMARY KEY, "
+        {% for attr in attributes %}
+        "{{ attr.name }} {{ attr.sql_type }}{% if not loop.last %}, {% endif %}"
+        {% endfor %}
+        ")";
+
+    m_db->exec(query_str);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+{{ class_name }}Dao::insert{{ class_name }}(const {{ class_name }}& {{ class_name.lower() }})
+{
+    SQLite::Statement query(
+        *m_db,
+        "INSERT INTO " + m_table_name +
+        " ({% for attr in attributes %}{{ attr.name }}{% if not loop.last %}, {% endif %}{% endfor %}) VALUES ({% for attr in attributes %}:{{ attr.name }}{% if not loop.last %}, {% endif %}{% endfor %})"
+    );
+
+    {% for attr in attributes %}
+    query.bind(":{{ attr.name }}", {{ class_name.lower() }}.{{ attr.name }}());
+    {% endfor %}
+
+    query.exec();
+}
+
+// ----------------------------------------------------------------------------
+
+std::vector<{{ class_name }}>
+{{ class_name }}Dao::get{{ class_name }}s(const std::string& condition)
+{
+    std::vector<{{ class_name }}> {{ class_name.lower() }}s;
+    std::string query_str = "SELECT id, {% for attr in attributes %}{{ attr.name }}{% if not loop.last %}, {% endif %}{% endfor %} FROM " + m_table_name;
+    updateQueryWithCondtion(query_str, condition);
+
+    SQLite::Statement query(*m_db, query_str);
+
+    while (query.executeStep())
+    {
+        int id = query.getColumn("id");
+        {% for attr in attributes %}
+        {{ attr.cpp_type }} {{ attr.name }} = query.getColumn("{{ attr.name }}");
+        {% endfor %}
+        {{ class_name.lower() }}s.emplace_back({% for attr in attributes %}{{ attr.name }}{% if not loop.last %}, {% endif %}{% endfor %}, id);
+    }
+
+    return {{ class_name.lower() }}s;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+{{ class_name }}Dao::update{{ class_name }}ById(const {{ class_name }}& {{ class_name.lower() }})
+{
+    SQLite::Statement query(
+        *m_db, 
+        "UPDATE " + m_table_name +
+        " SET {% for attr in attributes %}{{ attr.name }} = :{{ attr.name }}{% if not loop.last %}, {% endif %}{% endfor %} WHERE id = :id"
+    );
+
+    {% for attr in attributes %}
+    query.bind(":{{ attr.name }}", {{ class_name.lower() }}.{{ attr.name }}());
+    {% endfor %}
+    query.bind(":id", {{ class_name.lower() }}.id());
+
+    query.exec();
+}
+
+// ----------------------------------------------------------------------------
+

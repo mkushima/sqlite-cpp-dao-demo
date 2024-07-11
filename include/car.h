@@ -6,9 +6,9 @@
 
 class Car {
 public:
-    Car(const std::string& make, const std::string& model, int year, int id = 0)
+    Car(const std::string& make, const std::string& model, const uint32_t& year, int64_t id = 0)
         : m_make(make), m_model(model), m_year(year), m_id(id) {}
-    
+
     inline std::string make() const {
         return m_make;
     }
@@ -17,20 +17,20 @@ public:
         return m_model;
     }
 
-    inline int year() const {
+    inline uint32_t year() const {
         return m_year;
     }
 
-    inline int id() const {
+    inline int64_t id() const {
         return m_id;
     }
 
-    friend std::ostream& operator<<(std::ostream& os, const Car& car)
+    friend std::ostream& operator<<(std::ostream& os, const Car& obj)
     {
-        os << "Car(id: " << car.m_id
-            << ", make: " << car.m_make
-            << ", model: " << car.m_model
-            << ", year: " << car.m_year
+        os << "Car(id: " << obj.m_id
+            << ", make: " << obj.m_make
+            << ", model: " << obj.m_model
+            << ", year: " << obj.m_year
             << ")";
         return os;
     }
@@ -38,8 +38,8 @@ public:
 private:
     std::string m_make;
     std::string m_model;
-    int m_year;
-    int m_id;
+    uint32_t m_year;
+    int64_t m_id;
 };
 
 #endif // CAR_H

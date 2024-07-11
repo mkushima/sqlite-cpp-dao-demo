@@ -22,7 +22,8 @@ CarDao::createTable()
         " (id INTEGER PRIMARY KEY, "
         "make TEXT, "
         "model TEXT, "
-        "year INTEGER)";
+        "year INTEGER"
+        ")";
 
     m_db->exec(query_str);
 }

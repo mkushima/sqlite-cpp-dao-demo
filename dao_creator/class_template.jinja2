@@ -1,0 +1,40 @@
+#ifndef {{ class_name.upper() }}_H
+#define {{ class_name.upper() }}_H
+
+#include <iostream>
+#include <string>
+
+class {{ class_name }} {
+public:
+    {{ class_name }}({% for attr in attributes %}const {{ attr.cpp_type }}& {{ attr.name }}{% if not loop.last %}, {% endif %}{% endfor %}, int64_t id = 0)
+        :{% for attr in attributes %} m_{{ attr.name }}({{ attr.name }}){% if not loop.last %},{% endif %}{% endfor %}, m_id(id) {}
+
+    {% for attr in attributes %}
+    inline {{ attr.cpp_type }} {{ attr.name }}() const {
+        return m_{{ attr.name }};
+    }
+
+    {% endfor %}
+    inline int64_t id() const {
+        return m_id;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const {{ class_name }}& obj)
+    {
+        os << "{{ class_name }}(id: " << obj.m_id
+            {% for attr in attributes %}
+            << ", {{ attr.name }}: " << obj.m_{{ attr.name }}
+            {% endfor %}
+            << ")";
+        return os;
+    }
+
+private:
+    {% for attr in attributes %}
+    {{ attr.cpp_type }} m_{{ attr.name }};
+    {% endfor %}
+    int64_t m_id;
+};
+
+#endif // {{ class_name.upper() }}_H
+

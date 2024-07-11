@@ -30,4 +30,11 @@ Makefile
 # Ignore SQLite database file (if not desired to be version controlled)
 *.db
 
+# Ignore Python virtual env
+venv/
+
+# Ignore generated data
+dao_creator/*h
+dao_creator/*cpp
+
 /SQLiteCpp_Example

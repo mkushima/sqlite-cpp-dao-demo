@@ -1,0 +1,18 @@
+#ifndef {{ class_name.upper() }}_DAO_H
+#define {{ class_name.upper() }}_DAO_H
+
+#include "dao_base.h"
+#include "{{ class_name.lower() }}.h"
+
+class {{ class_name }}Dao : public DaoBase {
+public:
+    explicit {{ class_name }}Dao(DatabasePtr db);
+
+    void createTable() override;
+    void insert{{ class_name }}(const {{ class_name }}& {{ class_name.lower() }});
+    std::vector<{{ class_name }}> get{{ class_name }}s(const std::string& condition = "");
+    void update{{ class_name }}ById(const {{ class_name }}& {{ class_name.lower() }});
+};
+
+#endif // {{ class_name.upper() }}_DAO_H
+
